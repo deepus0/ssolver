@@ -1,7 +1,7 @@
 package au.com.deepus.solver.rule;
 
 import au.com.deepus.models.SudokuCell;
-import au.com.deepus.models.SudokuGrid;
+import au.com.deepus.models.grid.SudokuGrid;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,20 +13,20 @@ public class HiddenSingleRule implements SudokuRule {
         boolean changed = false;
 
         for (int i = 1; i <= 9; i++) {
-            if (findCandidates(grid.getRows(), i)) {
+            if (findCandidates(grid, grid.getRows(), i, "Row")) {
                 changed = true;
             }
-            if (findCandidates(grid.getCols(), i)) {
+            if (findCandidates(grid, grid.getCols(), i, "Column")) {
                 changed = true;
             }
-            if (findCandidates(grid.getAllBoxes(), i)) {
+            if (findCandidates(grid, grid.getBoxes(), i, "Box")) {
                 changed = true;
             }
         }
         return changed;
     }
 
-    private boolean findCandidates(List<List<SudokuCell>> cells, int number) {
+    private boolean findCandidates(SudokuGrid grid, List<List<SudokuCell>> cells, int number, String name) {
         boolean changed = false;
         for (List<SudokuCell> row : cells) {
             boolean containsAllocated = false;
@@ -44,7 +44,9 @@ public class HiddenSingleRule implements SudokuRule {
                     }
                 }
                 if (candidateCells.size() == 1) {
-                    candidateCells.get(0).setAllocated(number);
+                    var cell = candidateCells.get(0);
+                    cell.setAllocated(number);
+                    grid.addStep("Found Hidden Single in " + name + " value " + cell.getAllocated() + " in cell " + cell.getCellName());
                     changed = true;
                 }
             }

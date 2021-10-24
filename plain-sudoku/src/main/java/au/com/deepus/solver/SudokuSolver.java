@@ -1,6 +1,6 @@
 package au.com.deepus.solver;
 
-import au.com.deepus.models.SudokuGrid;
+import au.com.deepus.models.grid.SudokuGrid;
 
 public interface SudokuSolver {
 

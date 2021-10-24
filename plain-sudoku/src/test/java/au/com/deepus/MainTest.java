@@ -1,8 +1,8 @@
 package au.com.deepus;
 
 import au.com.deepus.mapper.SudokuMapper;
+import au.com.deepus.solver.StandardSudokuSolver;
 import au.com.deepus.solver.SudokuSolver;
-import au.com.deepus.solver.SudokuSolverMain;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,6 +31,9 @@ class MainTest {
     private final String SAMPLE_EASY_3 = "170830000806000530902070040400006800067502910009700003010020709053000401000058062";
     private final String SAMPLE_EASY_3_SOL = "175834296846219537932675148421396875367582914589741623618423759253967481794158362";
 
+    private final String SAMPLE_EASY_4 = "020460017800003000046090820618005700009000300007800465065030270000100004390087050";
+    private final String SAMPLE_EASY_4_SOL = "923468517871523649546791823618345792459672381237819465165934278782156934394287156";
+
     private final String SAMPLE_MEDIUM_1 = "630000059008350014000060000049006000006000900000400860000030000890012700310000026";
     private final String SAMPLE_MEDIUM_1_SOL = "637841259928357614451269387249186573586723941173495862762534198894612735315978426";
 
@@ -40,14 +43,32 @@ class MainTest {
     private final String SAMPLE_MEDIUM_3 = "704000103830000076000603000001702300000405000006809200000501000910000054308000609";
     private final String SAMPLE_MEDIUM_3_SOL = "764958123839124576125673498491762385283415967576839241647591832912386754358247619";
 
+    private final String SAMPLE_MEDIUM_4 = "92.....36...8.2....83...25.1..5.7..8...6.4...2..3.1..9.64...97....4.9...87.....25";
+    private final String SAMPLE_MEDIUM_4_SOL = "921745836657832194483916257196527348738694512245381769364258971512479683879163425";
+
     private final String SAMPLE_HARD_1 = "004600000600020003590300600000009078003000200850400000007005014900060002000001900";
     private final String SAMPLE_HARD_1_SOL = "734658129618927543592314687126539478473186295859472361367295814941863752285741936";
 
     private final String SAMPLE_HARD_2 = "500006380080050900401000002000700028000000000160008000300000204009070010052400006";
     private final String SAMPLE_HARD_2_SOL = "527946381683251947491387652935764128278139465164528739316895274849672513752413896";
 
+    private final String SAMPLE_HARD_3 = "040000580006207000000000036900010000007306400000090001180000000000908600035000070";
+    private final String SAMPLE_HARD_3_SOL = "743169582856237194291845736928514367517386429364792851189673245472958613635421978";
+
+    private final String SAMPLE_HARD_4 = "570000040000302009028000000003080000400709006000030800000000970900104000060000025";
+    private final String SAMPLE_HARD_4_SOL = "579618243146352789328947561213586497485729316697431852831265974952174638764893125";
+
+    private final String SAMPLE_HARD_5 = "050004000308020506600380071007500398002000400185009700240057009809040607000100030";
+    private final String SAMPLE_HARD_5_SOL = "751964823398721546624385971467512398932876415185439762243657189819243657576198234";
+
+    private final String SAMPLE_HARD_6 = "000006030405080907180720005642500700001000800007002354900043076304010209020800000";
+    private final String SAMPLE_HARD_6_SOL = "279456138465381927183729645642538791531974862897162354918243576354617289726895413";
+
+    private final String SAMPLE_HARD_7 = "003080076890035002157400000001063000032000690000890100000002957600150034240070800";
+    private final String SAMPLE_HARD_7_SOL = "423981576896735412157426389981263745732514698564897123318642957679158234245379861";
+
     final SudokuMapper sudokuMapper = new SudokuMapper();
-    final SudokuSolver solver = new SudokuSolverMain();
+    final SudokuSolver solver = new StandardSudokuSolver();
 
     @Test
     void runRedundancyTests() {
@@ -72,6 +93,11 @@ class MainTest {
     }
 
     @Test
+    void runEasy4SudokuTest() {
+        compareGrids(SAMPLE_EASY_4, SAMPLE_EASY_4_SOL);
+    }
+
+    @Test
     void runMedium1SudokuTest() {
         compareGrids(SAMPLE_MEDIUM_1, SAMPLE_MEDIUM_1_SOL);
     }
@@ -87,6 +113,11 @@ class MainTest {
     }
 
     @Test
+    void runMedium4SudokuTest() {
+        compareGrids(SAMPLE_MEDIUM_4, SAMPLE_MEDIUM_4_SOL);
+    }
+
+    @Test
     void runHard1SudokuTests() {
         compareGrids(SAMPLE_HARD_1, SAMPLE_HARD_1_SOL);
     }
@@ -96,14 +127,42 @@ class MainTest {
         compareGrids(SAMPLE_HARD_2, SAMPLE_HARD_2_SOL);
     }
 
+    @Test
+    void runHard3SudokuTests() {
+        compareGrids(SAMPLE_HARD_3, SAMPLE_HARD_3_SOL);
+    }
+
+    @Test
+    void runHard4SudokuTests() {
+        compareGrids(SAMPLE_HARD_4, SAMPLE_HARD_4_SOL);
+    }
+
+    @Test
+    void runHard5SudokuTests() {
+        compareGrids(SAMPLE_HARD_5, SAMPLE_HARD_5_SOL);
+    }
+
+    @Test
+    void runHard6SudokuTests() {
+        compareGrids(SAMPLE_HARD_6, SAMPLE_HARD_6_SOL);
+    }
+
+    @Test
+    void runHard7SudokuTests() {
+        compareGrids(SAMPLE_HARD_7, SAMPLE_HARD_7_SOL);
+    }
+
     void compareGrids(String unsolved, String solved) {
-        var unsolvedGrid = sudokuMapper.map(unsolved);
-        var solvedGrid = sudokuMapper.map(solved);
+        var unsolvedGrid = sudokuMapper.mapV2(unsolved);
+        var solvedGrid = sudokuMapper.mapV2(solved);
         System.out.println(unsolvedGrid);
 
         var attemptSolve = solver.solve(unsolvedGrid);
         if (!attemptSolve.isSolved()) {
             System.out.println(attemptSolve);
+            attemptSolve.getSteps().forEach(System.out::println);
+        } else {
+            System.out.println("Took " + attemptSolve.getIterationCount() + " iterations");
         }
         assertTrue(attemptSolve.isSolved());
         assertEquals(attemptSolve, solvedGrid);

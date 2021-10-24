@@ -1,7 +1,8 @@
 package au.com.deepus.solver.rule;
 
 import au.com.deepus.models.SudokuCell;
-import au.com.deepus.models.SudokuGrid;
+import au.com.deepus.models.grid.SudokuGrid;
+import au.com.deepus.models.grid.SudokuGridStandard;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,10 +23,9 @@ public class PointingPairRule implements SudokuRule {
         boolean changed = false;
 
         // Pointing Pair / Triple
-        for (List<SudokuCell> box : grid.getAllBoxes()) {
-            for (int i = 1; i <= box.size(); i++) {
+        for (List<SudokuCell> box : grid.getBoxes()) {
+            for (int i = 1; i <= 9; i++) {
                 final int finalI = i;
-                int boxId = box.get(0).getBox();
                 boolean boxContainsNumber = box.stream().map(SudokuCell::getAllocated).collect(Collectors.toList()).contains(finalI);
                 if (!boxContainsNumber) {
                     List<SudokuCell> candidateCells = box.stream()
@@ -35,15 +35,19 @@ public class PointingPairRule implements SudokuRule {
                             .filter(cell -> cell.getPossibilities().contains(finalI))
                             .map(SudokuCell::getBoxCell)
                             .collect(Collectors.toList());
-                    if (candidates.size() == 0 || candidateCells.size() == 0) {
+                    if (candidates.isEmpty() || candidateCells.isEmpty()) {
                         continue;
                     }
                     if (ROW_1.containsAll(candidates) || ROW_2.containsAll(candidates) || ROW_3.containsAll(candidates)) {
-                        if (removeRowPossibilities(grid, finalI, candidateCells.get(0).getRow())) {
+                        if (removeRowPossibilities(grid, finalI, candidateCells.get(0))) {
+                            var cell = candidateCells.get(0);
+                            grid.addStep("Found Pointing Pair/Triple " + finalI + " in row " + (cell.getRow() + 1));
                             changed = true;
                         }
                     } else if (COL_1.containsAll(candidates) || COL_2.containsAll(candidates) || COL_3.containsAll(candidates)) {
-                        if (removeColPossibilities(grid, finalI, candidateCells.get(0).getCol())) {
+                        if (removeColPossibilities(grid, finalI, candidateCells.get(0))) {
+                            var cell = candidateCells.get(0);
+                            grid.addStep("Found Pointing Pair/Triple " + finalI + " in col " + (cell.getCol() + 1));
                             changed = true;
                         }
                     }
@@ -55,17 +59,29 @@ public class PointingPairRule implements SudokuRule {
         return changed;
     }
 
-    private boolean removeRowPossibilities(SudokuGrid grid, int number, int row) {
-        for (SudokuCell cells : grid.getRow(row)) {
-            return cells.getPossibilities().removeAll(List.of(number));
+    private boolean removeRowPossibilities(SudokuGrid grid, int number, SudokuCell candidateCell) {
+        boolean changed = false;
+        for (SudokuCell cell : grid.getRow(candidateCell.getRow())) {
+            if (candidateCell.getBox() != cell.getBox()) {
+                if (cell.getPossibilities().removeAll(List.of(number))) {
+                    changed = true;
+                }
+            }
+
         }
-        return false;
+        return changed;
     }
 
-    private boolean removeColPossibilities(SudokuGrid grid, int number, int col) {
-        for (SudokuCell cells : grid.getCol(col)) {
-            return cells.getPossibilities().removeAll(List.of(number));
+    private boolean removeColPossibilities(SudokuGrid grid, int number, SudokuCell candidateCell) {
+        boolean changed = false;
+        for (SudokuCell cell : grid.getCol(candidateCell.getCol())) {
+            if (candidateCell.getBox() != cell.getBox()) {
+                if (cell.getPossibilities().removeAll(List.of(number))) {
+                    changed = true;
+                }
+            }
+
         }
-        return false;
+        return changed;
     }
 }

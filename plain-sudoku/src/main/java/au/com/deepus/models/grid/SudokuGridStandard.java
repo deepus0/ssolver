@@ -1,17 +1,24 @@
-package au.com.deepus.models;
+package au.com.deepus.models.grid;
 
+import au.com.deepus.models.SudokuCell;
 import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Initial design of the Sudoku grid
+ * Stores the sudoku grid in a 2D array of Sudoku Cells
+ */
 @Data
-public class SudokuGrid {
+public class SudokuGridStandard implements SudokuGrid {
 
     private List<List<SudokuCell>> cells;
+    private List<String> steps;
+    private int iterationCount;
 
-    public SudokuGrid() {
+    public SudokuGridStandard() {
         this.cells = new ArrayList<>();
     }
 
@@ -147,13 +154,27 @@ public class SudokuGrid {
         return true;
     }
 
+    @Override
+    public List<List<SudokuCell>> getBoxes() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<SudokuCell> getBox(int boxId) {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SudokuGrid)) return false;
-        SudokuGrid that = (SudokuGrid) o;
+        if (!(o instanceof SudokuGridStandard)) return false;
+        SudokuGridStandard that = (SudokuGridStandard) o;
         return Objects.equals(cells, that.cells);
+    }
+
+    @Override
+    public void addStep(String step) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -163,7 +184,7 @@ public class SudokuGrid {
 
     @Override
     public String toString() {
-        StringBuffer s = new StringBuffer("Sudoku Grid: \n");
+        StringBuilder s = new StringBuilder("Sudoku Grid: (iteration count - " + iterationCount + ") \n");
         s.append("+---+---+---+---+---+---+---+---+---+\n");
         for (List<SudokuCell> row : this.cells) {
             for (int i = 0; i < row.size(); i++) {
