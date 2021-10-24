@@ -9,40 +9,26 @@ import java.util.stream.Collectors;
 
 public class NakedCandidatesRule implements SudokuRule {
 
+    private boolean isChanged;
+
     @Override
     public boolean apply(SudokuGrid grid) {
-        boolean changed = false;
-
-        if (findCandidateCells(grid.getBoxes(), grid)) {
-            changed = true;
-        }
-        if (findCandidateCells(grid.getRows(), grid)) {
-            changed = true;
-        }
-        if (findCandidateCells(grid.getCols(), grid)) {
-            changed = true;
-        }
-        return changed;
+        this.isChanged = false;
+        findCandidateCells(grid.getBoxes(), grid);
+        findCandidateCells(grid.getRows(), grid);
+        findCandidateCells(grid.getCols(), grid);
+        return this.isChanged;
     }
 
-    private boolean findCandidateCells(List<List<SudokuCell>> cells, SudokuGrid grid) {
-        boolean changed = false;
+    private void findCandidateCells(List<List<SudokuCell>> cells, SudokuGrid grid) {
         for (List<SudokuCell> arr : cells) {
-            if (findCandidates(arr, grid, 2)) {
-                changed = true;
-            }
-            if (findCandidates(arr, grid, 3)) {
-                changed = true;
-            }
-            if (findCandidates(arr, grid, 4)) {
-                changed = true;
-            }
+            findCandidates(arr, grid, 2);
+            findCandidates(arr, grid, 3);
+            findCandidates(arr, grid, 4);
         }
-        return changed;
     }
 
-    private boolean findCandidates(List<SudokuCell> arr, SudokuGrid grid, int count) {
-        boolean changed = false;
+    private void findCandidates(List<SudokuCell> arr, SudokuGrid grid, int count) {
         var pairs = arr.stream()
                 .filter(cell -> cell.getPossibilities().size() == count)
                 .collect(Collectors.toList());
@@ -58,11 +44,10 @@ public class NakedCandidatesRule implements SudokuRule {
                 for (SudokuCell cell : arr) {
                     if (!cell.isPopulated() && !matches.contains(cell) && cell.getPossibilities().removeAll(matches.get(0).getPossibilities())) {
                         grid.addStep("Added Candidate Pair/Triple/Quad rule on " + matches.get(0).getPossibilities());
-                        changed = true;
+                        this.isChanged = true;
                     }
                 }
             }
         }
-        return changed;
     }
 }

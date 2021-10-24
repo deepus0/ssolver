@@ -8,26 +8,21 @@ import java.util.List;
 
 public class HiddenSingleRule implements SudokuRule {
 
+    private boolean isChanged;
+
     @Override
     public boolean apply(SudokuGrid grid) {
-        boolean changed = false;
+        this.isChanged = false;
 
         for (int i = 1; i <= 9; i++) {
-            if (findCandidates(grid, grid.getRows(), i, "Row")) {
-                changed = true;
-            }
-            if (findCandidates(grid, grid.getCols(), i, "Column")) {
-                changed = true;
-            }
-            if (findCandidates(grid, grid.getBoxes(), i, "Box")) {
-                changed = true;
-            }
+            findCandidates(grid, grid.getRows(), i, "Row");
+            findCandidates(grid, grid.getCols(), i, "Column");
+            findCandidates(grid, grid.getBoxes(), i, "Box");
         }
-        return changed;
+        return isChanged;
     }
 
-    private boolean findCandidates(SudokuGrid grid, List<List<SudokuCell>> cells, int number, String name) {
-        boolean changed = false;
+    private void findCandidates(SudokuGrid grid, List<List<SudokuCell>> cells, int number, String name) {
         for (List<SudokuCell> row : cells) {
             boolean containsAllocated = false;
             for (SudokuCell cell : row) {
@@ -47,10 +42,9 @@ public class HiddenSingleRule implements SudokuRule {
                     var cell = candidateCells.get(0);
                     cell.setAllocated(number);
                     grid.addStep("Found Hidden Single in " + name + " value " + cell.getAllocated() + " in cell " + cell.getCellName());
-                    changed = true;
+                    this.isChanged = true;
                 }
             }
         }
-        return changed;
     }
 }

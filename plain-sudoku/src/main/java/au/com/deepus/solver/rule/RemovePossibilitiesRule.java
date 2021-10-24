@@ -7,25 +7,18 @@ import java.util.List;
 
 public class RemovePossibilitiesRule implements SudokuRule {
 
+    private boolean isChanged;
 
     @Override
     public boolean apply(SudokuGrid grid) {
-        boolean changed = false;
-        if (findPossibilities(grid, grid.getRows())) {
-            changed = true;
-        }
-        if (findPossibilities(grid, grid.getCols())) {
-            changed = true;
-        }
-        if (findPossibilities(grid, grid.getBoxes())) {
-            changed = true;
-        }
-
-        return changed;
+        this.isChanged = false;
+        findPossibilities(grid, grid.getRows());
+        findPossibilities(grid, grid.getCols());
+        findPossibilities(grid, grid.getBoxes());
+        return isChanged;
     }
 
-    private boolean findPossibilities(SudokuGrid grid, List<List<SudokuCell>> arr) {
-        boolean changed = false;
+    private void findPossibilities(SudokuGrid grid, List<List<SudokuCell>> arr) {
         for (List<SudokuCell> cells : arr) {
             for (SudokuCell cell : cells) {
                 if (cell.isPopulated()) {
@@ -35,12 +28,11 @@ public class RemovePossibilitiesRule implements SudokuRule {
                             if (grid.getIterationCount() > 0) {
                                 grid.addStep("Removed Possibility " + cell.getAllocated() + " from " + cell2.getCellName());
                             }
-                            changed = true;
+                            this.isChanged = true;
                         }
                     }
                 }
             }
         }
-        return changed;
     }
 }

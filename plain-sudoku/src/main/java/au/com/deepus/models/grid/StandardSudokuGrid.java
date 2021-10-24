@@ -1,5 +1,6 @@
 package au.com.deepus.models.grid;
 
+import au.com.deepus.models.SolvedStep;
 import au.com.deepus.models.SudokuCell;
 
 import java.util.ArrayList;
@@ -7,22 +8,32 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/**
- *
- */
-public class SudokuGridV2 implements SudokuGrid {
+public class StandardSudokuGrid implements SudokuGrid {
 
     private final List<SudokuCell> cells;
-    private final List<String> steps;
+    private final List<SolvedStep> steps;
     private int iterationCount;
+    private final List<List<SudokuCell>> rows;
+    private final List<List<SudokuCell>> cols;
+    private final List<List<SudokuCell>> boxes;
 
-    public SudokuGridV2() {
-        this.cells = new ArrayList<>();
+    public StandardSudokuGrid(List<SudokuCell> cells) {
+        this.cells = cells;
         this.steps = new ArrayList<>();
-    }
+        this.rows = new ArrayList<>();
+        this.cols = new ArrayList<>();
+        this.boxes = new ArrayList<>();
 
-    public void addCell(SudokuCell cell) {
-        this.cells.add(cell);
+        for (int i = 0; i < 9; i++) {
+            rows.add(new ArrayList<>());
+            cols.add(new ArrayList<>());
+            boxes.add(new ArrayList<>());
+        }
+        for (SudokuCell cell : this.cells) {
+            rows.get(cell.getRow()).add(cell);
+            cols.get(cell.getCol()).add(cell);
+            boxes.get(cell.getBox()).add(cell);
+        }
     }
 
     @Override
@@ -32,27 +43,22 @@ public class SudokuGridV2 implements SudokuGrid {
 
     @Override
     public SudokuCell getCell(int rowId, int colId) {
-        return cells.stream()
-                .filter(cell -> cell.getRow() == rowId && cell.getCol() == colId)
-                .findFirst()
-                .orElse(null);
+        for (SudokuCell cell : cells) {
+            if (cell.getRow() == rowId && cell.getCol() == colId) {
+                return cell;
+            }
+        }
+        return null;
     }
 
     @Override
     public List<List<SudokuCell>> getRows() {
-        var rows = new ArrayList<List<SudokuCell>>();
-        for (int i = 0; i < 9; i++) {
-            rows.add(new ArrayList<>());
-        }
-        for (SudokuCell cell : this.cells) {
-            rows.get(cell.getRow()).add(cell);
-        }
-        return rows;
+        return this.rows;
     }
 
     @Override
     public List<SudokuCell> getRow(int rowId) {
-        return this.cells.stream().filter(cell -> cell.getRow() == rowId).collect(Collectors.toList());
+        return this.rows.get(rowId);
     }
 
     @Override
@@ -62,19 +68,12 @@ public class SudokuGridV2 implements SudokuGrid {
 
     @Override
     public List<List<SudokuCell>> getCols() {
-        var cols = new ArrayList<List<SudokuCell>>();
-        for (int i = 0; i < 9; i++) {
-            cols.add(new ArrayList<>());
-        }
-        for (SudokuCell cell : this.cells) {
-            cols.get(cell.getCol()).add(cell);
-        }
-        return cols;
+        return this.cols;
     }
 
     @Override
     public List<SudokuCell> getCol(int colId) {
-        return this.cells.stream().filter(cell -> cell.getCol() == colId).collect(Collectors.toList());
+        return this.cols.get(colId);
     }
 
     @Override
@@ -84,19 +83,12 @@ public class SudokuGridV2 implements SudokuGrid {
 
     @Override
     public List<List<SudokuCell>> getBoxes() {
-        var boxes = new ArrayList<List<SudokuCell>>();
-        for (int i = 0; i < 9; i++) {
-            boxes.add(new ArrayList<>());
-        }
-        for (SudokuCell cell : this.cells) {
-            boxes.get(cell.getBox()).add(cell);
-        }
-        return boxes;
+        return this.boxes;
     }
 
     @Override
     public List<SudokuCell> getBox(int boxId) {
-        return this.cells.stream().filter(cell -> cell.getBox() == boxId).collect(Collectors.toList());
+        return this.boxes.get(boxId);
     }
 
     @Override
@@ -106,7 +98,7 @@ public class SudokuGridV2 implements SudokuGrid {
 
     @Override
     public List<String> getSteps() {
-        return this.steps;
+        return this.steps.stream().map(SolvedStep::getDescription).collect(Collectors.toList());
     }
 
     @Override
@@ -116,7 +108,7 @@ public class SudokuGridV2 implements SudokuGrid {
 
     @Override
     public void addStep(String step) {
-        this.steps.add(step);
+        this.steps.add(new SolvedStep(step));
     }
 
     @Override
@@ -137,8 +129,8 @@ public class SudokuGridV2 implements SudokuGrid {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SudokuGridV2)) return false;
-        SudokuGridV2 that = (SudokuGridV2) o;
+        if (!(o instanceof StandardSudokuGrid)) return false;
+        StandardSudokuGrid that = (StandardSudokuGrid) o;
         return Objects.equals(cells, that.cells);
     }
 

@@ -67,6 +67,13 @@ class MainTest {
     private final String SAMPLE_HARD_7 = "003080076890035002157400000001063000032000690000890100000002957600150034240070800";
     private final String SAMPLE_HARD_7_SOL = "423981576896735412157426389981263745732514698564897123318642957679158234245379861";
 
+    private final String SAMPLE_WIKI = "530070000600195000098000060800060003400803001700020006060000280000419005000080079";
+    private final String SAMPLE_WIKI_ANTI_BRUTE = "000000000000003085001020000000507000004000100090000000500000073002010000000040009";
+    private final String SAMPLE_X_WING = "100000569402000008050009040000640801000010000208035000040500010900000402621000005";
+    private final String SAMPLE_Y_WING = "900240000050690231020050090090700320002935607070002900069020073510079062207086009";
+    private final String SAMPLE_Y_WING_2 = "900040000000600031020000090000700020002935600070002000060000073510090000000080009";
+    private final String SAMPLE_XYZ_WING = "090001700500200008000030200070004960200060005069700030008090000700003009003800040";
+
     final SudokuMapper sudokuMapper = new SudokuMapper();
     final SudokuSolver solver = new StandardSudokuSolver();
 
@@ -152,9 +159,47 @@ class MainTest {
         compareGrids(SAMPLE_HARD_7, SAMPLE_HARD_7_SOL);
     }
 
+    @Test
+    void runWikiSudokuTest() {
+        solveGrid(SAMPLE_WIKI);
+        solveGrid(SAMPLE_WIKI_ANTI_BRUTE);
+    }
+
+//    @Test
+//    void runXWingSudokuTest() {
+//        solveGrid(SAMPLE_X_WING);
+//    }
+//
+//    @Test
+//    void runYWingSudokuTest() {
+//        solveGrid(SAMPLE_Y_WING);
+//    }
+//
+//    @Test
+//    void runXYZWingSudokuTest() {
+//        solveGrid(SAMPLE_XYZ_WING);
+//    }
+//
+//    @Test
+//    void runYWing2SudokuTest() {
+//        solveGrid(SAMPLE_Y_WING_2);
+//    }
+
+    void solveGrid(String unsolved) {
+        var unsolvedGrid = sudokuMapper.mapStandardSudokuGrid(unsolved);
+        System.out.println(unsolvedGrid);
+        var attemptSolve = solver.solve(unsolvedGrid);
+        if (!attemptSolve.isSolved()) {
+            System.out.println(attemptSolve);
+            attemptSolve.getSteps().forEach(System.out::println);
+        }
+        assertTrue(attemptSolve.isSolved());
+        System.out.println("Took " + attemptSolve.getIterationCount() + " iterations");
+    }
+
     void compareGrids(String unsolved, String solved) {
-        var unsolvedGrid = sudokuMapper.mapV2(unsolved);
-        var solvedGrid = sudokuMapper.mapV2(solved);
+        var unsolvedGrid = sudokuMapper.mapStandardSudokuGrid(unsolved);
+        var solvedGrid = sudokuMapper.mapStandardSudokuGrid(solved);
         System.out.println(unsolvedGrid);
 
         var attemptSolve = solver.solve(unsolvedGrid);

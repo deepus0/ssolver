@@ -4,14 +4,13 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
 @Data
 public class SudokuCell {
 
-    private final List<Integer> POSSIBLE_VALUES = new LinkedList<Integer>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9));
+    private final List<Integer> POSSIBLE_VALUES = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9));
 
     private int id;
     private int allocated;
@@ -37,10 +36,6 @@ public class SudokuCell {
     public void setAllocated(int allocated) {
         this.allocated = allocated;
         this.setPossibilities(new ArrayList<>());
-    }
-
-    public SudokuCell() {
-        this.allocated = 0;
     }
 
     public boolean isPopulated() {
@@ -78,12 +73,12 @@ public class SudokuCell {
         if (this == o) return true;
         if (!(o instanceof SudokuCell)) return false;
         SudokuCell that = (SudokuCell) o;
-        return id == that.id && allocated == that.allocated && row == that.row && col == that.col && box == that.box && boxCell == that.boxCell && Objects.equals(POSSIBLE_VALUES, that.POSSIBLE_VALUES) && Objects.equals(possibilities, that.possibilities);
+        return id == that.id && allocated == that.allocated && row == that.row && col == that.col && box == that.box && boxCell == that.boxCell && Objects.equals(possibilities, that.possibilities);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(POSSIBLE_VALUES, id, allocated, possibilities, row, col, box, boxCell);
+        return Objects.hash(id, allocated, possibilities, row, col, box, boxCell);
     }
 
     public String getCellName() {

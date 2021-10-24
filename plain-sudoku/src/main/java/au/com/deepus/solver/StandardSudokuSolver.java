@@ -19,6 +19,12 @@ import java.util.stream.Collectors;
 public class StandardSudokuSolver implements SudokuSolver {
 
     /**
+     * Configuration of the Sudoku Solver to validate the grid after every iteration
+     * Does make the solver slightly slower. Mainly use for development purposes.
+     */
+    private final boolean VALIDATE_GRID = true;
+
+    /**
      * Defines the order to run the rules list
      */
     private final List<SudokuRule> rulesList = Arrays.asList(
@@ -35,7 +41,7 @@ public class StandardSudokuSolver implements SudokuSolver {
 
         ruleLoop:
         while (!grid.isSolved() && iteration < 2000) {
-            if (!validateGrid(grid)) {
+            if (VALIDATE_GRID && !validateGrid(grid)) {
                 grid.getSteps().forEach(System.out::println);
                 System.out.println(grid);
                 throw new InvalidGridException();
