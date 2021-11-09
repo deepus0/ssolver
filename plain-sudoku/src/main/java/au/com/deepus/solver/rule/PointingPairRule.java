@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static au.com.deepus.helper.SudokuConstants.SUDOKU_COUNT;
+
 public class PointingPairRule implements SudokuRule {
 
     private boolean isChanged;
@@ -23,7 +25,7 @@ public class PointingPairRule implements SudokuRule {
         this.isChanged = false;
         // Pointing Pair / Triple
         for (List<SudokuCell> box : grid.getBoxes()) {
-            for (int i = 1; i <= 9; i++) {
+            for (int i = 1; i <= SUDOKU_COUNT; i++) {
                 final int finalI = i;
                 boolean boxContainsNumber = box.stream().map(SudokuCell::getAllocated).collect(Collectors.toList()).contains(finalI);
                 if (!boxContainsNumber) {

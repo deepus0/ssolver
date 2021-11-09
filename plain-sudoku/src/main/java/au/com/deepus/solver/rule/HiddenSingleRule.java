@@ -6,6 +6,8 @@ import au.com.deepus.models.grid.SudokuGrid;
 import java.util.ArrayList;
 import java.util.List;
 
+import static au.com.deepus.helper.SudokuConstants.SUDOKU_COUNT;
+
 public class HiddenSingleRule implements SudokuRule {
 
     private boolean isChanged;
@@ -14,7 +16,7 @@ public class HiddenSingleRule implements SudokuRule {
     public boolean apply(SudokuGrid grid) {
         this.isChanged = false;
 
-        for (int i = 1; i <= 9; i++) {
+        for (int i = 1; i <= SUDOKU_COUNT; i++) {
             findCandidates(grid, grid.getRows(), i, "Row");
             findCandidates(grid, grid.getCols(), i, "Column");
             findCandidates(grid, grid.getBoxes(), i, "Box");

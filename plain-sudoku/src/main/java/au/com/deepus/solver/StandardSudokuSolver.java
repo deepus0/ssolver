@@ -9,6 +9,7 @@ import au.com.deepus.solver.rule.NakedSingleRule;
 import au.com.deepus.solver.rule.PointingPairRule;
 import au.com.deepus.solver.rule.RemovePossibilitiesRule;
 import au.com.deepus.solver.rule.SudokuRule;
+import au.com.deepus.solver.rule.XWingRule;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -32,8 +33,9 @@ public class StandardSudokuSolver implements SudokuSolver {
             new NakedSingleRule(),
             new HiddenSingleRule(),
             new NakedCandidatesRule(),
-            new PointingPairRule()
-    );
+            new PointingPairRule(),
+            new XWingRule()
+            );
 
     @Override
     public SudokuGrid solve(SudokuGrid grid) {

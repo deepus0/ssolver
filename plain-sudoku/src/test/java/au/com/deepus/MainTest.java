@@ -69,7 +69,7 @@ class MainTest {
 
     private final String SAMPLE_WIKI = "530070000600195000098000060800060003400803001700020006060000280000419005000080079";
     private final String SAMPLE_WIKI_ANTI_BRUTE = "000000000000003085001020000000507000004000100090000000500000073002010000000040009";
-    private final String SAMPLE_X_WING = "100000569402000008050009040000640801000010000208035000040500010900000402621000005";
+    private final String SAMPLE_X_WING = "1.....569492.561.8.561.924...964.8.1.64.1....218.356.4.4.5...169.5.614.2621.....5";
     private final String SAMPLE_Y_WING = "900240000050690231020050090090700320002935607070002900069020073510079062207086009";
     private final String SAMPLE_Y_WING_2 = "900040000000600031020000090000700020002935600070002000060000073510090000000080009";
     private final String SAMPLE_XYZ_WING = "090001700500200008000030200070004960200060005069700030008090000700003009003800040";
@@ -165,10 +165,10 @@ class MainTest {
         solveGrid(SAMPLE_WIKI_ANTI_BRUTE);
     }
 
-//    @Test
-//    void runXWingSudokuTest() {
-//        solveGrid(SAMPLE_X_WING);
-//    }
+    @Test
+    void runXWingSudokuTest() {
+        solveGrid(SAMPLE_X_WING);
+    }
 //
 //    @Test
 //    void runYWingSudokuTest() {
@@ -190,9 +190,9 @@ class MainTest {
         System.out.println(unsolvedGrid);
         var attemptSolve = solver.solve(unsolvedGrid);
         if (!attemptSolve.isSolved()) {
-            System.out.println(attemptSolve);
             attemptSolve.getSteps().forEach(System.out::println);
         }
+        System.out.println(attemptSolve);
         assertTrue(attemptSolve.isSolved());
         System.out.println("Took " + attemptSolve.getIterationCount() + " iterations");
     }

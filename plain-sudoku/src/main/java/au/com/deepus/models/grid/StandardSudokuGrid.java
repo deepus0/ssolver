@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static au.com.deepus.helper.SudokuConstants.SUDOKU_COUNT;
+
 public class StandardSudokuGrid implements SudokuGrid {
 
     private final List<SudokuCell> cells;
@@ -24,7 +26,7 @@ public class StandardSudokuGrid implements SudokuGrid {
         this.cols = new ArrayList<>();
         this.boxes = new ArrayList<>();
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < SUDOKU_COUNT; i++) {
             rows.add(new ArrayList<>());
             cols.add(new ArrayList<>());
             boxes.add(new ArrayList<>());
