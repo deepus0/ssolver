@@ -195,6 +195,7 @@ class MainTest {
         System.out.println(attemptSolve);
         assertTrue(attemptSolve.isSolved());
         System.out.println("Took " + attemptSolve.getIterationCount() + " iterations");
+        attemptSolve.getSteps().forEach(System.out::println);
     }
 
     void compareGrids(String unsolved, String solved) {
